@@ -1,7 +1,26 @@
-import '../styles/globals.css'
+import "styles/globals.css";
+import { supabase } from "utils/supabase";
+import { useEffect } from "react";
+import axios from "axios";
+import { useRouter } from "next/router";
 
-function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
-}
+const MyApp = ({ Component, pageProps }) => {
+  const router = useRouter();
 
-export default MyApp
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        await axios.post("/api/auth", {
+          event,
+          session,
+        });
+        router.push("/");
+      }
+    );
+    return authListener.unsubscribe;
+  }, []);
+
+  return <Component {...pageProps} />;
+};
+
+export default MyApp;
