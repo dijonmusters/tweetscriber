@@ -42,7 +42,7 @@ const handler = async (req, res) => {
 
     const { error } = await supabase.from("tweet").insert(tweets);
 
-    await supabase.rpc("cron", {
+    await supabase.rpc("get_tweets_each_day", {
       id,
       content,
     });

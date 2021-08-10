@@ -16,3 +16,13 @@ select status
     jsonb_build_object('record', jsonb_build_object('id', id, 'content', content))
   )::http_request);
 ```
+
+```
+GRANT USAGE ON SCHEMA net TO "authenticated";
+GRANT ALL ON ALL TABLES IN SCHEMA net TO "authenticated";
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA net TO "authenticated";
+
+GRANT USAGE ON SCHEMA supabase_functions TO "authenticated";
+GRANT ALL ON ALL TABLES IN SCHEMA supabase_functions TO "authenticated";
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA supabase_functions TO "authenticated";
+```

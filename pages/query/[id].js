@@ -1,13 +1,23 @@
 import { supabase } from "utils/supabase";
 import cookie from "cookie";
+import { useEffect, useState } from "react";
 
-const QueryId = ({ query: { id, title, content, tweet } }) => {
-  const handleTweetFetch = async () => {
-    await supabase.rpc("get_tweets", {
-      id: id.toString(),
-      content,
-    });
-  };
+const QueryId = ({ query: { title, content, tweet } }) => {
+  const [tweets, setTweets] = useState([...tweet]);
+
+  const handleNewTweet = ({ new: newTweet }) =>
+    setTweets((current) => [...current, newTweet]);
+
+  useEffect(() => {
+    const subscription = supabase
+      .from("tweet")
+      .on("INSERT", handleNewTweet)
+      .subscribe();
+
+    return () => {
+      supabase.removeSubscription(subscription);
+    };
+  }, []);
 
   return (
     <div className="prose mx-auto min-h-screen w-full flex flex-col justify-center items-center">
@@ -16,15 +26,15 @@ const QueryId = ({ query: { id, title, content, tweet } }) => {
           <span className="text-2xl">{title}</span>
           <span className="text-gray-500"> {content}</span>
         </p>
-        {tweet.length > 0 ? (
-          tweet.map((t) => (
+        {tweets.length > 0 ? (
+          tweets.map((t) => (
             <p key={t.id} className="px-2 my-2">
               {t.content}
               <span className="text-gray-500 text-sm"> {t.handle}</span>
             </p>
           ))
         ) : (
-          <button onClick={handleTweetFetch}>Get tweets</button>
+          <p>No tweets to display</p>
         )}
       </div>
     </div>
