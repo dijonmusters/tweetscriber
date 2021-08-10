@@ -3,7 +3,6 @@ import cookie from "cookie";
 import Link from "next/link";
 
 const Home = ({ queries }) => {
-  console.log(queries);
   return (
     <div className=" mx-auto min-h-screen max-w-xl w-full flex flex-col justify-center items-center">
       {queries.map(({ id, title, content, tweet }) => (
@@ -22,7 +21,7 @@ const Home = ({ queries }) => {
       ))}
       <Link href="/query/new">
         <a className="self-start text-xl text-gray-500 ml-4 mt-2">
-          Create new query
+          + Create new query
         </a>
       </Link>
     </div>

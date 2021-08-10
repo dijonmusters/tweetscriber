@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { supabase } from "utils/supabase";
 import { useRouter } from "next/router";
-import axios from "axios";
 
 const NewQuery = () => {
   const [title, setTitle] = useState("");
@@ -13,9 +12,14 @@ const NewQuery = () => {
   const handleSubmit = useCallback(
     async (e) => {
       if (title !== "" && content !== "" && e.key === "Enter") {
-        const { data } = await axios.post("/api/new-query", { title, content });
-        console.log(data);
-        router.push("/");
+        const { data } = await supabase.from("query").insert([
+          {
+            title,
+            content,
+            user_id: supabase.auth.user().id,
+          },
+        ]);
+        router.push(`/query/${data[0].id}`);
       }
     },
     [title, content]
