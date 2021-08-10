@@ -1,12 +1,16 @@
 import { supabase } from "utils/supabase";
 import cookie from "cookie";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
-const QueryId = ({ query: { title, content, tweet } }) => {
+const QueryId = ({ query: { id, title, content, tweet } }) => {
   const [tweets, setTweets] = useState([...tweet]);
 
-  const handleNewTweet = ({ new: newTweet }) =>
-    setTweets((current) => [...current, newTweet]);
+  const handleNewTweet = ({ new: newTweet }) => {
+    if (newTweet.query_id === id) {
+      setTweets((current) => [...current, newTweet]);
+    }
+  };
 
   useEffect(() => {
     const subscription = supabase
@@ -20,18 +24,31 @@ const QueryId = ({ query: { title, content, tweet } }) => {
   }, []);
 
   return (
-    <div className="prose mx-auto min-h-screen w-full flex flex-col justify-center items-center">
-      <div className="py-2 px-8 border w-full my-1">
-        <p>
-          <span className="text-2xl">{title}</span>
-          <span className="text-gray-500"> {content}</span>
-        </p>
+    <div className="mx-auto min-h-screen max-w-3xl w-full">
+      <Link href="/">
+        <a className="mt-12 flex">
+          <img src="/arrow-left.svg" width="16" className="mr-1" />
+          All subscriptions
+        </a>
+      </Link>
+      <h1 className="text-5xl mt-6">{title}</h1>
+      <p className="text-gray-500 text-2xl px-2">{content}</p>
+      <div className="py-2 w-full flex flex-col mb-4">
         {tweets.length > 0 ? (
           tweets.map((t) => (
-            <p key={t.id} className="px-2 my-2">
+            <a
+              key={t.id}
+              className="py-8 px-4 w-full border-b-2"
+              href={t.tweet_url}
+            >
               {t.content}
-              <span className="text-gray-500 text-sm"> {t.handle}</span>
-            </p>
+              <a
+                className="text-gray-500 text-sm block px-2 py-2"
+                href={`https://twitter.com/${t.handle}`}
+              >
+                @{t.handle}
+              </a>
+            </a>
           ))
         ) : (
           <p>No tweets to display</p>

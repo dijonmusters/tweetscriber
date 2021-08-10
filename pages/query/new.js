@@ -12,14 +12,18 @@ const NewQuery = () => {
   const handleSubmit = useCallback(
     async (e) => {
       if (title !== "" && content !== "" && e.key === "Enter") {
-        const { data } = await supabase.from("query").insert([
+        const { data, error } = await supabase.from("query").insert([
           {
             title,
             content,
             user_id: supabase.auth.user().id,
           },
         ]);
-        router.push(`/query/${data[0].id}`);
+
+        console.log(error);
+        if (data) {
+          router.push(`/query/${data[0].id}`);
+        }
       }
     },
     [title, content]
@@ -38,10 +42,11 @@ const NewQuery = () => {
 
   return (
     <>
-      <div className="prose mx-auto min-h-screen w-full flex flex-col justify-center items-center">
+      <div className="mx-auto min-h-screen max-w-3xl w-full flex flex-col justify-center items-center">
+        <h1 className="self-start text-5xl">New Subscription</h1>
         <input
           type="text"
-          className="w-full text-5xl outline-none"
+          className="w-full text-5xl outline-none mt-2 p-4"
           placeholder="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -49,7 +54,7 @@ const NewQuery = () => {
         />
         <input
           type="text"
-          className={`w-full text-5xl outline-none ${
+          className={`w-full text-5xl outline-none px-4 ${
             title === "" && content === "" ? "invisible" : "visible"
           }`}
           placeholder="Query"
