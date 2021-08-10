@@ -2,6 +2,7 @@ import { supabase } from "utils/supabase";
 import cookie from "cookie";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const QueryId = ({ query: { id, title, content, tweet } }) => {
   const [tweets, setTweets] = useState([...tweet]);
@@ -27,7 +28,12 @@ const QueryId = ({ query: { id, title, content, tweet } }) => {
     <div className="mx-auto min-h-screen max-w-3xl w-full">
       <Link href="/">
         <a className="mt-12 flex">
-          <img src="/arrow-left.svg" width="16" className="mr-1" />
+          <Image
+            src="/arrow-left.svg"
+            width="16"
+            height="16"
+            className="mr-1"
+          />
           All subscriptions
         </a>
       </Link>
